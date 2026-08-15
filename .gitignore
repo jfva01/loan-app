@@ -1,0 +1,31 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+frontend/.env*.local
+
+# Node general (por si el mock externo es Node, o tooling)
+node_modules/
+npm-debug.log*
+
+# SQL Server local (por si generas un .mdf/.ldf de LocalDB)
+*.mdf
+*.ldf
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Variables de entorno / secretos
+.env
+*.env.local
+appsettings.*.local.json
