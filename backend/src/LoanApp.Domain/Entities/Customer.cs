@@ -8,11 +8,11 @@ namespace LoanApp.Domain.Entities
         public string? Address { get; private set; }
         public string? State { get; private set; }
         public string? CompanyName { get; private set; }
-        public DateTime Ssn { get; private set; }
+        public string? Ssn { get; private set; }
 
         private Customer() { } // EF Core
 
-        public Customer(string firstName, string lastName, string address, string state, string companyName, DateTime ssn)
+        public Customer(string firstName, string lastName, string address, string state, string companyName, string ssn)
         {
             Id = Guid.NewGuid();
             FirstName = firstName;
@@ -23,7 +23,7 @@ namespace LoanApp.Domain.Entities
             Ssn = ssn;
         }
 
-        public void UpdateFrom(string firstName, string lastName, string address, string state, string companyName, DateTime ssn)
+        public void UpdateFrom(string firstName, string lastName, string address, string state, string companyName)
         {
             FirstName = firstName;
             LastName = lastName;

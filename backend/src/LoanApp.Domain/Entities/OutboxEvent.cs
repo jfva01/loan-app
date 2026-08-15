@@ -10,7 +10,7 @@ namespace LoanApp.Domain.Entities
         public ExternalOperation Operation { get; private set; }
         public OutboxEventStatus Status { get; private set; }
         public int Attempts { get; private set; }
-        public DateTime CreateAtUtc { get; private set; }
+        public DateTime CreatedAtUtc { get; private set; }
         public DateTime? ProcessedAtUtc { get; private set; }
 
         private OutboxEvent() { } // EF Core
@@ -22,10 +22,10 @@ namespace LoanApp.Domain.Entities
             Operation = operation;
             Status = OutboxEventStatus.Pending;
             Attempts = 0;
-            CreateAtUtc = DateTime.UtcNow;
+            CreatedAtUtc = DateTime.UtcNow;
         }
 
-        public void MarkasSent()
+        public void MarkAsSent()
         {
             Status = OutboxEventStatus.Sent;
             ProcessedAtUtc = DateTime.UtcNow;
