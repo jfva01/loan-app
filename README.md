@@ -11,7 +11,15 @@
 
 ## How to run locally
 
-[pendiente — se completa cuando el resto de servicios esté armado]
+### Backend
+
+```bash
+cd backend
+dotnet ef database update --project src/LoanApp.Infrastructure --startup-project src/LoanApp.Api
+dotnet run --project src/LoanApp.Api
+```
+
+API available at `https://localhost:5298/api/applications` (swagger UI at `/swagger`).
 
 ## How to run the tests
 
