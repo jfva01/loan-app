@@ -149,6 +149,35 @@ public class LoanApplicationServiceTests : IDisposable
         Assert.Empty(await _context.Customers.ToListAsync());
     }
 
+    [Fact]
+    public async Task SaveChangesAsync_ConstraintViolationMidTransaction_RollsBackEverything()
+    {
+        // Dos clientes con el mismo SSN en el mismo ChangeTracker: viola el índice único
+        // en el momento del SaveChangesAsync, no antes. Simula justo el escenario si algo falla, 
+        // nada de lo pendiente en esa unidad de trabajo se guarda.
+        var customerRepository = new CustomerRepository(_context);
+        var outboxRepository = new OutboxRepository(_context);
+        var unitOfWork = new UnitOfWork(_context);
+
+        var customerA = new Customer("Ana", "Gómez", "1 First St", "CA", "Omega", "111-11-1111");
+        var applicationA = new LoanApplication(3000m, customerA.Id);
+        customerRepository.AddCustomer(customerA);
+        customerRepository.AddApplication(applicationA);
+        outboxRepository.Add(new OutboxEvent("{}", ExternalOperation.Create));
+
+        // Mismo SSN que customerA: esto debe romper el SaveChangesAsync.
+        var customerB = new Customer("Bruno", "Ríos", "2 Second St", "TX", "Beta", "111-11-1111");
+        customerRepository.AddCustomer(customerB);
+
+        await Assert.ThrowsAsync<DbUpdateException>(() => unitOfWork.SaveChangesAsync());
+
+        // Nada de lo pendiente en esa unidad de trabajo debe haber quedado guardado,
+        // ni siquiera customerA, que por sí solo no era válido.
+        Assert.Empty(await _context.Customers.ToListAsync());
+        Assert.Empty(await _context.Applications.ToListAsync());
+        Assert.Empty(await _context.OutboxEvents.ToListAsync());
+    }
+
     public void Dispose()
     {
         _context.Dispose();
