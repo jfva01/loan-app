@@ -22,7 +22,7 @@ public class LoanRecordsController : ControllerBase
     {
         var customerId = payload.GetProperty("customerId").GetGuid();
         _store.Records[customerId] = payload;
-        _logger.LogInformation("CREATE received: {Payload}", customerId, payload);
+        _logger.LogInformation("CREATE received for {CustomerId}: {Payload}", customerId, payload);
         return Ok(new { received = true, operation = "create", customerId, payload });
     }
 
