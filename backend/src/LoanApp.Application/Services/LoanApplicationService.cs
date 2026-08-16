@@ -69,7 +69,7 @@ public class LoanApplicationService
             customer.Address!, customer.State!, customer.CompanyName!,
             application.Id, application.RequestedAmount);
 
-        var payloadJson = JsonSerializer.Serialize(payload);
+        var payloadJson = JsonSerializer.Serialize(payload, PayloadJsonOptions);
         var operation = isReturningCustomer ? ExternalOperation.Update : ExternalOperation.Create;
 
         _outboxRepository.Add(new OutboxEvent(payloadJson, operation));
@@ -80,4 +80,9 @@ public class LoanApplicationService
 
         return new LoanApplicationResult(true, null, application.Id);
     }
+
+    private static readonly JsonSerializerOptions PayloadJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 }

@@ -28,9 +28,15 @@ builder.Services.AddScoped<IBlacklistProvider, AppSettingsBlacklistProvider>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IOutboxRepository, OutboxRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IExternalLoanService, StubExteranlLoanService>();
+//builder.Services.AddScoped<IExternalLoanService, StubExteranlLoanService>();
+
+builder.Services.AddHttpClient<IExternalLoanService, HttpExternalLoanService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5262/");
+});
 
 builder.Services.AddScoped<LoanApplicationService>();
+builder.Services.AddHostedService<LoanApp.Infrastructure.BackgroundJobs.OutboxProcessor>();
 
 builder.Services.AddCors(options =>
 {

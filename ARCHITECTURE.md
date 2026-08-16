@@ -31,6 +31,16 @@ The outbox event is written to the database in the same transaction, not sent ov
 
 **Returning customer**: identified by SSN (unique index on `Customers.Ssn`). If found, the existing `Customer` and its `LoanApplication` (unique index on `Applications.CustomerId`, enforcing one application per customer) are updated in place — no new rows. The outbox event records whether the operation was `Create` or `Update` so the background processor knows which HTTP verb to use against the external service.
 
+## Background event delivery (Outbox pattern)
+
+`OutboxEvent` rows are written in the same transaction as `Customer`/`LoanApplication` (see previous section), guaranteeing that an event exists if and only if the underlying data was actually saved.
+
+A `BackgroundService` (`OutboxProcessor`) polls the database every 5 seconds for `Pending` or `Failed` (with attempts < 5) events, in batches of 10, and sends each to the external mock over HTTP — `POST /api/loanrecords` for new customers, `PUT /api/loanrecords/{customerId}` for returning customers. On success, the event is marked `Sent`. On failure, `Attempts` increments and the event is retried on the next polling cycle, up to 5 attempts, after which it's left `Failed` permanently.
+
+**Why polling instead of a message queue**: no external broker (RabbitMQ, Service Broker) is justified at this scale — polling on an indexed `Status` column is the simplest mechanism that still decouples "data saved" from "external call succeeded."
+
+**Why a fixed retry limit instead of exponential backoff**: this outbox doesn't distinguish transient failures (the mock briefly down) from permanent ones (a payload the external service always rejects) — either way, a short fixed-interval retry window is enough to recover from a transient blip without the complexity of backoff. 5 attempts at a 5-second interval (25 seconds total) is a round, low number chosen for a short retry window, not derived from a specific SLA.
+
 ## Trade-offs so far
 
 - **Guid over int identity**: avoids needing a round-trip to the database to get a generated key before building the outbox payload.

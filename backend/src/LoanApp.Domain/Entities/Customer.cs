@@ -3,12 +3,12 @@ namespace LoanApp.Domain.Entities
     public class Customer
     {
         public Guid Id { get; private set; }
-        public string? FirstName { get; private set; }
-        public string? LastName { get; private set; }
-        public string? Address { get; private set; }
-        public string? State { get; private set; }
-        public string? CompanyName { get; private set; }
-        public string? Ssn { get; private set; }
+        public string FirstName { get; private set; } = string.Empty;
+        public string LastName { get; private set; } = string.Empty;
+        public string Address { get; private set; } = string.Empty;
+        public string State { get; private set; } = string.Empty;
+        public string CompanyName { get; private set; } = string.Empty;
+        public string Ssn { get; private set; } = string.Empty;
 
         private Customer() { } // EF Core
 

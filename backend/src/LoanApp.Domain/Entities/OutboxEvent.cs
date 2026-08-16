@@ -6,7 +6,7 @@ namespace LoanApp.Domain.Entities
     public class OutboxEvent
     {
         public Guid Id { get; private set; }
-        public string? Payload { get; private set; } // Json srializado
+        public string Payload { get; private set; } = string.Empty; // Json srializado
         public ExternalOperation Operation { get; private set; }
         public OutboxEventStatus Status { get; private set; }
         public int Attempts { get; private set; }
