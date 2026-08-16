@@ -18,7 +18,7 @@ public class NyStateDenyRuleTests
 
         // Assert
         Assert.True(result.IsDenied);
-        Assert.Equal("State NY is not elegible.", result.Reason);
+        Assert.Equal("State NY is not eligible.", result.Reason);
     }
 
     [Theory]

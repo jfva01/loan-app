@@ -1,4 +1,11 @@
+using LoanApp.Application.Abstractions;
+using LoanApp.Application.Rules;
+using LoanApp.Application.Services;
+using LoanApp.Domain.Rules;
+using LoanApp.Infrastructure.External;
 using LoanApp.Infrastructure.Persistence;
+using LoanApp.Infrastructure.Persistence.Repositories;
+using LoanApp.Infrastructure.Rules;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +20,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+builder.Services.AddScoped<IDenyRule, NyStateDenyRule>();
+builder.Services.AddScoped<IDenyRule, BlacklistedSsnDenyRule>();
+builder.Services.AddScoped<IRuleEngine, RuleEngine>();
+builder.Services.AddScoped<IBlacklistProvider, AppSettingsBlacklistProvider>();
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IOutboxRepository, OutboxRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IExternalLoanService, StubExteranlLoanService>();
+
+builder.Services.AddScoped<LoanApplicationService>();
 
 var app = builder.Build();
 
