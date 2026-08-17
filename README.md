@@ -1,6 +1,6 @@
 # Loan Application
 
-[Link al video — pendiente]
+[Watch the demo video](https://www.loom.com/share/c5aac01b877d4274942c75b4c06bdd02)
 
 ## Test data
 
