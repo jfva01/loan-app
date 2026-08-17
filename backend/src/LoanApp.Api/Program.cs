@@ -40,7 +40,7 @@ builder.Services.AddHostedService<LoanApp.Infrastructure.BackgroundJobs.OutboxPr
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5298")
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
