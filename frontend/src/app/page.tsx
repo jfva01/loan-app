@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { submitApplication } from "@/lib/api";
+import { formatSsn } from "@/lib/formatters";
 
 const US_STATES = [
   "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA",
@@ -152,7 +153,7 @@ export default function ApplicationFormPage(){
             type="text"
             placeholder="123-45-6789"
             value={formData.ssn}
-            onChange={(e) => handleChange("ssn", e.target.value)}
+            onChange={(e) => handleChange("ssn", formatSsn(e.target.value))}
             className="w-full rounded border border-gray-300 px-3 py-2"
           />
         </Field>
@@ -167,14 +168,41 @@ export default function ApplicationFormPage(){
           />
         </Field>
         {submitError && (
-          <p className="text-sm text-red-600" role="alert">{submitError}</p>
+          <div
+            role="alert"
+            className="rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700"
+          >
+            {submitError}
+          </div>
         )}
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded bg-blue-600 px-4 py-2 text-white transition-opacity disabled:opacity-50"
         >
+          {isSubmitting && (
+            <svg
+              className="h-4 w-4 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+          )}
           {isSubmitting ? "Submitting..." : "Submit application"}
         </button>
       </form>

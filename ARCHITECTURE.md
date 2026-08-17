@@ -49,3 +49,13 @@ A `BackgroundService` (`OutboxProcessor`) polls the database every 5 seconds for
 - **Rollback verified with a dedicated test** (`SaveChangesAsync_ConstraintViolationMidTransaction_RollsBackEverything`): forces a unique-constraint violation mid-`SaveChangesAsync` and asserts that no entity in that unit of work — not even the ones that were individually valid — was persisted.
 - **200 OK for both approved and denied applications**: a denial is a valid business outcome produced by the rule engine working correctly, not a system error. 4xx/5xx are reserved for actual failures (invalid payload, unhandled exceptions). The frontend branches on the `approved` field, not on status code.
 - **JSON payload uses camelCase explicitly** (`JsonNamingPolicy.CamelCase`): the external service contract expects standard REST casing. This was caught via manual end-to-end testing, not by the automated test suite — the integration tests verify that outbox events are persisted correctly, but don't assert on the exact shape of the serialized payload consumed by the external service. Worth noting as a gap in test coverage, acceptable for this scope but real.
+
+## Frontend
+
+Next.js (App Router) + TypeScript + Tailwind. Three routes: `/` (form), `/approved`, `/denied` — separate routes chosen over a single state-driven page for clearer navigation and an easier video walkthrough.
+
+`src/lib/api.ts` centralizes the HTTP call to the backend; `src/lib/types.ts` mirrors the backend's DTO contract. The base URL is configurable via `NEXT_PUBLIC_API_BASE_URL` (`.env.local`, not committed).
+
+**"Address must include state" interpretation**: implemented as two separate form fields (`address`, `state`) rather than one free-text field, since the deny rule (`State == "NY"`) needs an isolated, comparable value — parsing state out of free text would be unreliable and isn't what the rule engine expects.
+
+**CORS**: backend allows requests from `http://localhost:3000` (the frontend's origin) — not to be confused with the backend's own port (5298), a mix-up worth flagging since it's easy to configure backwards.
