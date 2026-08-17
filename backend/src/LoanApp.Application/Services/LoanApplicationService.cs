@@ -32,7 +32,7 @@ public class LoanApplicationService
         var ruleResult = _ruleEngine.Evaluate(new RuleContext(request.State, request.Ssn));
 
         if(ruleResult.IsDenied)
-            return new LoanApplicationResult(false, ruleResult.Reason, null);
+            return new LoanApplicationResult(false, ruleResult.Reason, null, false);
 
         var existingCustomer = await _customerRepository.GetBySsnAsync(request.Ssn, ct);
         var isReturningCustomer = existingCustomer is not null;
@@ -78,7 +78,7 @@ public class LoanApplicationService
         // se confirman o revierten juntos
         await _unitOfWork.SaveChangesAsync(ct);
 
-        return new LoanApplicationResult(true, null, application.Id);
+        return new LoanApplicationResult(true, null, application.Id, isReturningCustomer);
     }
 
     private static readonly JsonSerializerOptions PayloadJsonOptions = new()

@@ -32,7 +32,7 @@ public class ApplicationsController : ControllerBase
             ), ct
         );
 
-        var response = new SubmitApplicationResponseDto(result.Approved, result.DenialReason, result.ApplicationId);
+        var response = new SubmitApplicationResponseDto(result.Approved, result.DenialReason, result.ApplicationId, result.IsReturningCustomer);
 
         // En caso de aprovado o denegado retorna un 200, denegado es un resultado
         // válido del negocio. El front decidirá qué página mostrar según el campo 

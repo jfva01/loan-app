@@ -6,6 +6,7 @@ import Link from "next/link";
 export default function ApprovedPage() {
   const searchParams = useSearchParams();
   const applicationId = searchParams.get("applicationId");
+  const isReturningCustomer = searchParams.get("returning") === "true";
 
   return (
     <main className="mx-auto max-w-lg p-6 text-center">
@@ -14,7 +15,10 @@ export default function ApprovedPage() {
         Application Approved
       </h1>
       <p className="mb-6 text-gray-600">
-        Your loan application has been approved.
+        {isReturningCustomer
+          ? "Your existing application has been updated with your new information."
+          : "Your loan application has been approved."
+        }
       </p>
       {applicationId && (
         <p className="mb-6 text-sm text-gray-400">

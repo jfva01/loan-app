@@ -83,7 +83,7 @@ export default function ApplicationFormPage(){
       });
 
       if (result.approved){
-        router.push(`/approved?applicationId=${result.applicationId}`);
+        router.push(`/approved?applicationId=${result.applicationId}&returning=${result.isReturningCustomer}`);
       }else{
         router.push(`/denied?reason=${encodeURIComponent(result.denialReason ?? "")}`);
       }
